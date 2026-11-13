@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ORBITAL SALVAGE｜オービタルサルベージ</title>
+  <meta name="description" content="4章構成の2D探索アドベンチャー『ORBITAL SALVAGE』。" />
+  <link rel="stylesheet" href="./flow.css?v=94" />
+  <style>
+    :root{color-scheme:dark;--bg:#070e18;--line:#3b6176;--gold:#e8b66d;--cyan:#88e5e5;--text:#e4edf3;--muted:#9badbd}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% 0,#183044 0,#070e18 60%);color:var(--text);font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+    .app{max-width:1440px;margin:auto;padding:17px clamp(10px,2.4vw,30px) 35px}.top{display:flex;gap:15px;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap}.brand{font-family:Georgia,serif;letter-spacing:.13em;color:#eac48f;font-size:clamp(19px,2.4vw,31px);font-weight:bold}.subtitle{color:var(--muted);font-size:12px;letter-spacing:.12em;margin-top:5px}.tools{display:flex;gap:8px;flex-wrap:wrap}.btn{background:#162b3b;border:1px solid #52758a;border-radius:5px;padding:9px 13px;transition:.18s}.btn:hover{background:#25475a}.btn.primary{background:#a56e3f;border-color:#deb26d;color:#fff}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 282px;gap:14px}.screenframe{border:1px solid #53758a;background:#060c16;box-shadow:0 0 36px #0008;position:relative}.location{display:flex;justify-content:space-between;gap:10px;align-items:center;border-bottom:1px solid #375269;background:#101f2c;padding:9px 14px;font-size:12px;color:#b6d2db;letter-spacing:.08em}.location strong{color:var(--gold)}
+    .scene{position:relative;aspect-ratio:1672/941;overflow:hidden;background:#080d18 url('./residential-ring.webp') center center/100% 100% no-repeat;isolation:isolate}
+    .hull{position:absolute;inset:8% 5% 5% 7%;clip-path:polygon(1% 17%,15% 5%,47% 9%,51% 2%,85% 8%,97% 28%,95% 76%,81% 95%,24% 90%,4% 75%);background:linear-gradient(120deg,#425262 0%,#253545 21%,#0b1824 32%,#263b48 48%,#131e2c 74%,#65717a 100%);box-shadow:inset 0 0 60px #02070c}.hull:before{content:"";position:absolute;inset:12%;border:12px solid #071521;border-left-width:24px;border-right-width:20px;clip-path:polygon(0 0,100% 0,100% 100%,0 100%);background:repeating-linear-gradient(90deg,#0b1925 0 50px,#142535 51px 56px,#07111d 58px 115px)}.hull:after{content:"";position:absolute;left:14%;top:20%;width:72%;height:55%;border:2px dashed #65849855;transform:rotate(-4deg)}.beam{position:absolute;height:3.4%;background:linear-gradient(#6d7e86,#293947,#0b151e);box-shadow:0 7px 12px #02070d88;transform-origin:left center}.b1{left:3%;top:20%;width:95%;transform:rotate(13deg)}.b2{left:14%;top:80%;width:86%;transform:rotate(-14deg)}.b3{left:51%;top:5%;width:60%;transform:rotate(74deg)}
+    .debris{position:absolute;pointer-events:none;opacity:.7;border:2px solid #526d7c;background:linear-gradient(135deg,#435669,#141f2d 55%,#293c48);box-shadow:4px 7px 12px #02060a9c}.d1{left:3%;top:54%;width:17%;height:11%;transform:rotate(-29deg);clip-path:polygon(0 18%,80% 0,100% 80%,8% 100%)}.d2{left:77%;top:58%;width:18%;height:15%;transform:rotate(25deg);clip-path:polygon(0 20%,78% 0,100% 100%,12% 82%)}.d3{left:43%;top:9%;width:15%;height:12%;transform:rotate(-19deg)}.d4{left:26%;top:72%;width:17%;height:8%;transform:rotate(9deg)}.d5{left:70%;top:27%;width:12%;height:6%;transform:rotate(-18deg)}
+    .hotspot{position:absolute;z-index:3;display:grid;place-items:center;border:0;background:transparent;padding:0;transform:translate(-50%,-50%) rotate(var(--rot,0deg));border-radius:8px}.hotspot .object{width:100%;height:100%;border:1px solid transparent;border-radius:8px;background:transparent;color:transparent;font-size:0}.hotspot:hover .object,.hotspot:focus-visible .object{border-color:var(--cyan);background:#8fe4e425;box-shadow:0 0 16px #80dce366,inset 0 0 8px #9debea33}.hotspot .tag{position:absolute;bottom:105%;left:50%;transform:translateX(-50%) rotate(calc(-1 * var(--rot,0deg)));white-space:nowrap;padding:4px 8px;background:#0a1822ed;border:1px solid #699eae;color:#e9f7ff;font-size:11px;opacity:0;pointer-events:none}.hotspot:hover .tag,.hotspot:focus-visible .tag{opacity:1}.hotspot.recovered{pointer-events:none}
+    .side{display:flex;flex-direction:column;gap:12px}.panel{background:linear-gradient(145deg,#142737,#0c1724);border:1px solid #38576a;padding:15px}.panel h2{font-size:12px;letter-spacing:.16em;color:var(--gold);margin:0 0 10px}.panel p{font-size:13px;line-height:1.8;margin:0;color:#d5e0e6}.progress{height:7px;background:#07121e;margin:12px 0 8px;border:1px solid #3e5866}.progress i{display:block;height:100%;background:#b18b56;transition:width .3s}.inventory{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.slot{aspect-ratio:1.1;border:1px dashed #4a6676;display:grid;place-items:center;background:#091622;color:#adc2ce;font-size:22px}.slot small{font-size:9px;grid-column:1/-1;line-height:1.3;text-align:center}.notebook{font-size:12px;line-height:1.8;color:#afc3ce;min-height:65px}.notebook li{margin:3px 0}.hint{font-size:12px;color:#b6cbd4}.footnote{font-size:11px;color:#8da4b3;line-height:1.7}
+    .dialogue{display:grid;grid-template-columns:108px minmax(0,1fr);gap:14px;min-height:126px;border:1px solid #4d7386;background:#0e1c2b;margin-top:10px;padding:14px}.portrait{display:grid;place-items:center;border:1px solid #38576b;background:radial-gradient(circle at 50% 10%,#294459,#0b1823);font-size:37px;color:#a5d3e3;letter-spacing:.03em}.dialogue strong{display:block;color:#e9b576;font-size:13px;margin:0 0 8px}.dialogue p{line-height:1.9;font-size:14px;white-space:pre-line;margin:0}.dialogue .small{color:#839eac;font-size:11px;margin-top:8px}
+    .modal{position:fixed;inset:0;z-index:20;background:#01060bdc;display:grid;place-items:center;padding:15px;overflow:auto}.modal[hidden]{display:none}.modalbox{width:min(680px,100%);background:linear-gradient(140deg,#1a3042,#091521);border:1px solid #7a9aaa;box-shadow:0 25px 90px #000c;padding:clamp(19px,4vw,32px);max-height:94vh;overflow:auto}.eyebrow{color:var(--gold);font-size:11px;letter-spacing:.2em}.modal h1{font-family:Georgia,serif;font-size:clamp(24px,4vw,39px);line-height:1.3;margin:14px 0;color:#f5dfbd}.modal h3{font-size:19px;margin:7px 0 15px;color:#e6c18d}.modal p{line-height:1.9;color:#d9e5ec;font-size:14px}.modalactions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:20px}.choices{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.zoom{height:270px;position:relative;background:linear-gradient(120deg,#0c1721,#283f4b 30%,#131f2c 90%);border:8px ridge #65747d;overflow:hidden}.zoom:before{content:"";position:absolute;inset:14px;border:4px solid #273b48;background:repeating-linear-gradient(90deg,#1c2a37 0 28%,#111e2a 28% 32%);box-shadow:inset 0 0 30px #05080d}.plate{position:absolute;inset:17% 9% 16% 10%;background:linear-gradient(130deg,#6a7b83,#384a54,#1f303c);border:5px solid #8a9999;box-shadow:8px 10px 18px #0009;display:grid;place-items:center;transform:rotate(-4deg);font-size:54px}.plate.moved{transform:translate(93%,-42%) rotate(18deg);transition:.35s;opacity:.45;pointer-events:none}.inside{position:absolute;left:26%;top:30%;font-size:70px;filter:brightness(.7);cursor:pointer;background:transparent;border:0}.inside[hidden]{display:none}.zoomcaption{font-size:12px!important;color:#9ab9c5!important}.secret{margin:12px 0;border:1px solid #526e7e;padding:10px;background:#0a1926}.secret strong{color:var(--gold)}
+    /* The supplied close-up is the same physical storage unit seen in the main scene. */
+    .modalbox{width:min(800px,100%)}
+    .zoom{height:auto;aspect-ratio:3/2;background:#101822 url('./storage-closed.webp') center/100% 100% no-repeat;border:1px solid #5b7483}
+    .zoom:before{display:none}
+    .plate{inset:0;width:100%;height:100%;clip-path:polygon(52% 34%,70% 14%,92% 77%,70% 89%);border:0;background:transparent;box-shadow:none;transform:none;display:block;font-size:0;cursor:pointer}
+    .plate:hover,.plate:focus-visible{background:#9be2ec26}
+    .opened-cover{position:absolute;left:55%;top:37%;width:22%;height:39%;background:linear-gradient(120deg,#060d16ee,#1b2937ed);border:2px solid #6b8390;box-shadow:0 0 25px #000b;display:grid;place-items:center}
+    .inside{position:static;display:grid;place-items:center;font-size:clamp(25px,5vw,64px);filter:brightness(.85);cursor:pointer;background:#17232b;border:1px solid #8a9d9e;border-radius:12px;padding:8px}
+    .zoom.opened{background-image:url('./storage-open.webp')}
+    .door-handle,.teddy-hotspot{position:absolute;border:1px solid transparent;border-radius:7px;background:transparent;cursor:pointer}
+    .door-handle{left:56.5%;top:33%;width:8%;height:22%}
+    .teddy-hotspot{left:55.6%;top:37.5%;width:9%;height:14%}
+    .door-handle:hover,.door-handle:focus-visible,.teddy-hotspot:hover,.teddy-hotspot:focus-visible{border-color:var(--cyan);background:#8fe4e42a;box-shadow:0 0 12px #65d9df77}
+    /* Keep object labels inside the visible artwork, including edge and top objects. */
+    .hotspot.edge-left .tag{left:0;right:auto;transform:none}
+    .hotspot.edge-right .tag{left:auto;right:0;transform:none}
+    .hotspot.edge-top .tag{top:105%;bottom:auto}
+    .screenframe{align-self:start;min-width:0}
+    .screenframe .dialogue{margin-top:0;border:0;border-top:1px solid #4d7386;min-width:0}
+    .dialogue>div:last-child{min-width:0;overflow-wrap:anywhere}
+    .dialogue-next{display:block;margin:7px 0 0 0;background:#17323dbb;border:1px solid #6f9aa7;border-radius:4px;padding:5px 12px;font-size:13px;color:#d4edf0;line-height:1.3;text-align:left}
+    .dialogue-next:hover,.dialogue-next:focus-visible{background:#294459;color:#fff}
+    .dialogue-next[hidden]{display:none}
+    .dialogue strong[hidden]{display:none}
+    .slot{overflow:hidden;align-content:center;gap:2px;padding:3px}
+    .slot img{display:block;width:100%;height:clamp(40px,5vw,69px);object-fit:contain}
+    .pickup-image{display:block;width:min(260px,65%);max-height:270px;object-fit:contain;margin:5px auto 12px;filter:drop-shadow(0 9px 18px #0008)}
+    /* Orbital salvage console: restrained luminous instrumentation. */
+    body{background:radial-gradient(ellipse at 18% -15%,#16364a 0,transparent 48%),radial-gradient(ellipse at 92% 32%,#142333 0,transparent 47%),#050b14}
+    .app{max-width:1510px}
+    .top{padding:5px 0 15px;border-bottom:1px solid #315363;margin-bottom:17px}
+    .brand{font-family:Georgia,'Times New Roman',serif;font-size:clamp(20px,2.6vw,33px);letter-spacing:.22em;color:#e1c49b;text-shadow:0 0 22px #c88d4c39}
+    .subtitle{letter-spacing:.18em;color:#7faabb}
+    .tools{gap:7px}
+    .btn{background:linear-gradient(150deg,#122f40,#0b1a28);border-color:#3e7282;border-radius:2px;padding:9px 15px;letter-spacing:.07em;box-shadow:inset 0 1px #8fdfea14}
+    .btn:hover{background:#244354;border-color:#88c4cb}
+    .btn.primary{background:linear-gradient(125deg,#ae7846,#765136);border-color:#d9ac73}
+    .layout{grid-template-columns:minmax(0,1fr) 290px;gap:16px}
+    .screenframe{border:1px solid #548193;box-shadow:0 20px 65px #000b,0 0 0 4px #122331;background:#08121e;overflow:hidden}
+    .screenframe:before{content:"";position:absolute;z-index:5;pointer-events:none;top:0;left:0;width:43px;height:4px;background:#e4b270;box-shadow:0 0 16px #f3c489aa}
+    .location{background:linear-gradient(90deg,#102c3b,#0a1929);border-bottom:1px solid #456c79;padding:10px 14px;color:#9bc2cf;font-family:ui-monospace,Consolas,monospace;letter-spacing:.1em}
+    .location strong{font-weight:normal;color:#a4e3df}
+    .panel{position:relative;background:linear-gradient(140deg,#122838e8,#081623f2);border:1px solid #325768;padding:17px 15px;box-shadow:inset 3px 0 #18485b,0 8px 20px #0004}
+    .panel:after{content:"";position:absolute;right:0;top:0;width:17px;height:17px;border-top:1px solid #7aafaf;border-right:1px solid #7aafaf;opacity:.75}
+    .panel h2{padding-bottom:9px;border-bottom:1px solid #2a5262;color:#d9b783;font-size:11px;letter-spacing:.18em}
+    .panel p{color:#c4d6de}
+    .progress{height:8px;background:repeating-linear-gradient(90deg,#081923 0 14%,#152d3b 14% 16%);border-color:#375867}
+    .progress i{background:linear-gradient(90deg,#62c6c8,#d8bc82);box-shadow:0 0 10px #79d3d45c}
+    .slot{background:linear-gradient(145deg,#0e2634,#09131e);border:1px solid #335c6d;border-radius:2px}
+    .dialogue{background:linear-gradient(120deg,#112b3a,#081827);border-color:#426a78}
+    .screenframe .dialogue{border-top:2px solid #4d8491;padding:13px 15px}
+    .dialogue strong{letter-spacing:.15em;color:#f0c487}
+    .dialogue p{color:#e3eef3}
+    .portrait{border:1px solid #528293;box-shadow:inset 0 0 19px #0006}
+    .dialogue-next{color:#9ce5e6;transition:transform .12s}
+    .dialogue-next:hover{transform:translateX(2px)}
+    .modalbox{border:1px solid #638da0;box-shadow:0 25px 100px #000d,inset 0 3px #cf9b63;background:linear-gradient(135deg,#142b3c,#08141f)}
+    /* SURVIVAL HUD / industrial equipment instead of generic web panels */
+    :root{--bg:#080b0d;--gold:#f5ac62;--cyan:#9dd7d1;--text:#e9e8e3;--muted:#9fa7a5}
+    body{color:var(--text);background:repeating-linear-gradient(90deg,transparent 0 79px,#ffffff04 80px),radial-gradient(ellipse at 50% -15%,#303b3c,#111719 52%,#070a0b 85%);font-family:'Arial Narrow','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif}
+    .app{padding-top:12px}
+    .top{background:linear-gradient(90deg,#222a2b,#131a1c 60%,#202829);border:1px solid #616b67;border-left:5px solid #eaa25d;padding:16px 20px;margin-bottom:12px;box-shadow:0 5px 0 #050809,0 15px 24px #0008}
+    .brand{font-family:Impact,'Arial Narrow',sans-serif;font-weight:800;font-style:italic;letter-spacing:.15em;font-size:clamp(24px,3vw,41px);color:#f1e7d6;text-shadow:3px 3px #000,0 0 12px #ffffff21}
+    .subtitle{font-family:ui-monospace,Consolas,monospace;color:#eeab6a;font-size:10px;letter-spacing:.14em}
+    .top .btn{font-family:ui-monospace,Consolas,monospace;font-weight:800;font-size:11px;letter-spacing:.1em;padding:12px 17px;background:#222a2b;border:1px solid #737d78;color:#e0e7e3;clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,0 100%)}
+    .top .btn:hover{background:#d18b4c;color:#080e10;border-color:#eeb06c}
+    .screenframe{border:3px solid #596763;outline:1px solid #151a1a;box-shadow:0 0 0 6px #151c1d,0 13px 38px #000c;background:#090d10}
+    .screenframe:before{width:90px;height:6px;background:#ec994c;box-shadow:0 0 12px #f1a35c44}
+    .location{background:#202b2b;color:#d7e1da;min-height:38px;border-bottom:2px solid #738179;font-weight:bold;letter-spacing:.07em}
+    .location strong{color:#f8b16e;text-transform:uppercase}
+    .scene{box-shadow:inset 0 0 0 2px #738b84}
+    .scene:before{content:'REC ●  02 / EVA FIELD SURVEY';position:absolute;z-index:5;left:15px;top:14px;padding:7px 10px;font:700 10px ui-monospace,Consolas,monospace;letter-spacing:.12em;color:#d5e7e0;background:#0a1316b8;border-left:3px solid #e59b5e;pointer-events:none;text-shadow:0 1px 3px #000}
+    .scene:after{content:'';position:absolute;z-index:4;inset:13px;border:2px solid #c3d2bd88;clip-path:polygon(0 0,7% 0,7% 1px,93% 1px,93% 0,100% 0,100% 100%,93% 100%,93% calc(100% - 1px),7% calc(100% - 1px),7% 100%,0 100%);box-shadow:inset 0 0 18px #0009;pointer-events:none}
+    .side{gap:14px}
+    .panel{background:linear-gradient(135deg,#263131 0%,#161e20 62%,#1a2425 100%);border:2px solid #67716c;border-top:4px solid #89938a;padding:15px;box-shadow:inset 0 0 0 2px #101719,6px 7px 0 #070a0b;clip-path:polygon(0 0,calc(100% - 17px) 0,100% 17px,100% 100%,0 100%)}
+    .panel:after{width:25px;height:25px;border-color:#e49f61;top:0;right:0;transform:rotate(0deg)}
+    .panel h2{font-family:Impact,'Arial Narrow',sans-serif;font-size:15px;letter-spacing:.11em;color:#f1b273;border-bottom:2px solid #69746d;padding-bottom:12px;margin-bottom:13px}
+    .panel h2:before{content:'▌';font-family:Arial,sans-serif;color:#e68f48;margin-right:3px}
+    .panel p{color:#e2e5e0;font-size:13px}
+    .progress{height:13px;border:1px solid #87978c;background:repeating-linear-gradient(90deg,#0f1819 0 19%,#647068 19% 20%);margin:17px 0 12px}
+    .progress i{background:repeating-linear-gradient(110deg,#b77740 0 10px,#e5ae6b 10px 20px);box-shadow:inset 0 2px #f6d29b88}
+    .slot{border:1px solid #69776e;background:radial-gradient(ellipse at 50% 20%,#3b4841,#0f1819 70%);box-shadow:inset 0 0 0 2px #111a1b;min-height:80px;color:#e8ac73}
+    .slot small{font-weight:bold;color:#e4e6df}
+    .notebook{font-family:ui-monospace,'Yu Gothic',monospace;font-size:11px;color:#d5e5d9;line-height:2.1}
+    .screenframe .dialogue{background:linear-gradient(90deg,#273231,#131e20 55%,#1b2929);border-top:4px solid #77877a;padding:14px;min-height:134px;gap:17px}
+    .dialogue strong{font-family:Impact,'Arial Narrow',sans-serif;font-weight:bold;color:#ffbd79;font-size:17px;letter-spacing:.09em;margin-bottom:6px}
+    .dialogue p{font-size:15px;line-height:1.75;color:#f0f0ea}
+    .portrait{border:2px solid #86968b;box-shadow:0 0 0 3px #111a1a,inset 0 -12px 20px #060c0cb8;background-color:#0d1313}
+    .portrait.neutral{background:radial-gradient(circle,#243634 0,#101a1a 67%);position:relative;font-size:0}
+    .portrait.neutral:before{content:'';display:block;width:43px;height:43px;border:2px solid #8bb5a3;border-radius:50%;box-shadow:0 0 0 8px #8bb5a310,inset 0 0 0 9px #8bb5a318}
+    .portrait.neutral:after{content:'+';position:absolute;color:#b1e6d4;font:300 33px ui-monospace,Consolas,monospace;line-height:1}
+    .dialogue-next{font-size:21px;font-weight:900;color:#f0ae6c;background:#162121;min-width:30px;border:1px solid #7b8b7d;margin-top:3px;padding:0 5px}
+    .dialogue-next:hover{background:#a77142;color:#fff}
+    .btn.primary{background:linear-gradient(135deg,#e0a564,#ad6832);color:#101617;font-weight:800;border:1px solid #ffc784;border-radius:1px}
+    .modalbox{background:linear-gradient(135deg,#263231,#101b1e);border:2px solid #819087;border-top:5px solid #d99a5b;box-shadow:0 15px 80px #000e}
+    .eyebrow{color:#f0ad6a}
+    /* physical game-menu controls, with a clear hierarchy */
+    .tools{gap:8px}
+    .top .tools .btn{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;min-width:100px;min-height:69px;padding:7px 12px 8px;background:linear-gradient(145deg,#303b39,#111a1b);border:1px solid #8c978b;border-bottom:4px solid #738376;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,0 100%);box-shadow:inset 3px 0 #495a51;letter-spacing:.07em}
+    .top .tools .btn:before{display:block;color:#e9b276;font:800 23px ui-monospace,Consolas,monospace;line-height:1;transition:transform .15s}
+    #hintBtn:before{content:'?'}
+    #journalBtn:before{content:'≡'}
+    #restartBtn:before{content:'↻'}
+    .top .tools .btn:hover{background:#b77c45;border-color:#f4c084;color:#0a1010}
+    .top .tools .btn:hover:before{color:#101614;transform:scale(1.07)}
+    /* in-game interaction panel: industrial HUD, not a browser alert */
+    .modal{background:radial-gradient(ellipse at center,#121a1acc,#020607f4);backdrop-filter:blur(5px)}
+    .modalbox{position:relative;width:min(820px,100%);padding:52px clamp(18px,4vw,36px) 25px;border:2px solid #8b968b;border-top:6px solid #d59a5a;clip-path:polygon(0 0,calc(100% - 25px) 0,100% 25px,100% 100%,0 100%);box-shadow:0 0 0 5px #101819,0 20px 80px #000e,inset 0 0 55px #0008}
+    .modalbox:before{content:'OS-02   /   EXPLORATION TERMINAL';position:absolute;left:0;right:0;top:0;height:35px;padding:10px 20px;border-bottom:1px solid #707e73;background:#303c39;color:#e9b577;font:700 10px ui-monospace,Consolas,monospace;letter-spacing:.13em}
+    .modal h1{font-family:Impact,'Arial Narrow',sans-serif;font-style:italic;letter-spacing:.06em;color:#f2e3cb;text-transform:uppercase}
+    .modal h3{font-family:Impact,'Arial Narrow',sans-serif;font-size:24px;letter-spacing:.04em;color:#f1d0a3;padding-bottom:10px;border-bottom:1px solid #566961}
+    .modal p{color:#e3e9e3}
+    .modalactions{padding-top:12px;border-top:1px solid #43544e}
+    .modalactions .btn{min-width:110px;font-weight:bold;border-radius:1px}
+    .secret{background:#182826;border-left:4px solid #d39a61;border-top:1px solid #6d7d70;border-right:1px solid #6d7d70;border-bottom:1px solid #6d7d70}
+    .secret strong{font-size:13px;letter-spacing:.13em;color:#f1b87d}
+    .event-stage{position:relative;overflow:hidden;min-height:310px;background:radial-gradient(ellipse at 55% 40%,#37443e,#11191b 70%);border:2px solid #73857b;margin:12px 0 16px;display:flex;justify-content:center;align-items:flex-start}
+    .event-stage img{width:min(300px,64%);height:270px;object-fit:contain;filter:drop-shadow(0 5px 20px #000b)}
+    .event-subtitle{position:absolute;bottom:0;left:0;right:0;padding:15px 18px;background:linear-gradient(90deg,#090f10ec,#1a2929e9);border-top:2px solid #d39b60;color:#f4eee2;font-size:14px;line-height:1.7}
+    .event-subtitle strong{display:block;color:#ffbd79;letter-spacing:.1em;margin-bottom:3px}
+    @media(max-width:540px){.top .tools .btn{min-width:79px;min-height:60px;font-size:10px;padding:6px 8px}.event-stage{min-height:270px}.event-stage img{height:225px}}
+    @media(max-width:920px){.layout{grid-template-columns:1fr}}
+    .portrait{position:relative;overflow:hidden;min-height:98px;background-image:url('./esteban-eva.webp');background-repeat:no-repeat;background-size:350% auto;background-position:center top;font-size:0}
+    .portrait.nana{background-image:url('./nana-eva.webp')}
+    .portrait.neutral{background-image:none;font-size:34px}
+    @media(max-width:540px){.portrait{min-height:86px;background-size:390% auto}}
+    @media(max-width:920px){.layout{grid-template-columns:1fr}.side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:540px){.app{padding:9px 8px 25px}.brand{font-size:19px}.side{grid-template-columns:1fr}.dialogue{grid-template-columns:60px 1fr;padding:10px;gap:9px}.portrait{font-size:22px}.dialogue p{font-size:13px}.location{font-size:10px}.modalbox{padding:18px}}
+    /* Visual direction v11: translucent, restrained tactical interface. */
+    :root{--bg:#080e13;--gold:#dfb184;--cyan:#a1d5dd;--text:#edf2f3;--muted:#a5b2b9}
+    body{background:radial-gradient(ellipse 70% 65% at 25% 20%,#1a2d36 0,transparent 70%),radial-gradient(ellipse 70% 65% at 85% 80%,#12272a 0,transparent 70%),#070e14;color:var(--text);font-family:'Hiragino Kaku Gothic ProN','Yu Gothic',Arial,sans-serif}
+    .app{max-width:1530px;padding-top:18px}
+    .top{min-height:58px;margin-bottom:14px;padding:7px 4px 13px 6px;border:0;border-bottom:1px solid #a6c6ca42;background:transparent;box-shadow:none}
+    .brand{font-family:'Arial Narrow',Arial,sans-serif;font-style:normal;font-weight:750;font-size:clamp(23px,2.7vw,34px);letter-spacing:.16em;color:#e7eeed;text-shadow:none}
+    .subtitle{color:#8daeb9;font-size:11px;letter-spacing:.13em}
+    .top .tools{gap:5px}
+    .top .tools .btn{display:flex;flex-direction:row;gap:9px;min-width:0;min-height:38px;padding:7px 12px;background:#101d25a8;border:1px solid #8eacb64a;border-bottom:1px solid #8eacb64a;border-radius:4px;clip-path:none;box-shadow:none;color:#d4e1e5;font-family:inherit;font-size:12px;font-weight:600;letter-spacing:.02em;backdrop-filter:blur(12px)}
+    .top .tools .btn:before{font:500 19px Arial,sans-serif;color:#a9c6ce}
+    .top .tools .btn:hover{background:#365361d4;border-color:#accdd6;color:#fff}
+    .top .tools .btn:hover:before{color:#fff}
+    .layout{gap:12px;grid-template-columns:minmax(0,1fr) 286px}
+    .screenframe{border:1px solid #8eb7bf6b;outline:0;box-shadow:0 15px 45px #0009;background:#10191de6;overflow:hidden}
+    .screenframe:before{display:none}
+    .location{min-height:34px;padding:8px 12px;background:#0b171dde;border:0;border-bottom:1px solid #87b5bc51;color:#b1c8cc;font-size:11px;font-weight:500;letter-spacing:.05em}
+    .location strong{color:#bde0e4;font-weight:500}
+    .scene{box-shadow:none}
+    .scene:before{content:'●  LIVE FEED  /  EVA-02';top:10px;left:12px;padding:6px 8px;border:0;border-radius:3px;background:#041018a3;color:#b7d5dd;font:600 10px ui-monospace,Consolas,monospace;text-shadow:0 1px 3px #000;letter-spacing:.08em}
+    .scene:after{inset:8px;border:0;border-radius:3px;box-shadow:inset 0 0 0 1px #d0e9df2b;clip-path:none}
+    .side{gap:10px}
+    .panel{padding:15px;background:#0a171dcc;border:1px solid #9cc1c34d;border-top:1px solid #9cc1c34d;border-radius:4px;clip-path:none;box-shadow:0 9px 23px #0004;backdrop-filter:blur(13px)}
+    .panel:after{display:none}
+    .panel h2{font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.12em;color:#c8dce1;padding-bottom:10px;border-bottom:1px solid #a9c9cf30;margin-bottom:12px}
+    .panel h2:before{content:'';display:inline-block;width:3px;height:10px;background:#86c5d1;margin-right:9px;vertical-align:-1px}
+    .panel p{font-size:12px;line-height:1.8;color:#d4e0e2}
+    .progress{height:5px;margin:14px 0 11px;border:0;background:#829ea044}
+    .progress i{background:linear-gradient(90deg,#71b8c6,#d4d9d5);box-shadow:0 0 9px #6bc1c35e}
+    .slot{aspect-ratio:1;min-height:0;background:#16262ca8;border:1px solid #a6c0c342;border-radius:3px;box-shadow:none}
+    .slot small{font-weight:500;color:#d6e4e7}
+    .notebook{color:#cadbdf;font-family:inherit;font-size:12px;line-height:1.9}
+    .screenframe .dialogue{background:#07151dd9;border-top:1px solid #9bc2c866;min-height:120px;padding:12px 15px;gap:14px}
+    .dialogue strong{font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.06em;color:#d5e8eb;margin-bottom:6px}
+    .dialogue p{font-size:14px;color:#f0f5f4;line-height:1.85}
+    .portrait{border:1px solid #8db6bc8c;border-radius:3px;box-shadow:none;background-color:#0d1e24}
+    .portrait.neutral{background:#142831ad}
+    .portrait.neutral:before{height:38px;width:38px;border:1px solid #87b8c2;box-shadow:none}
+    .portrait.neutral:after{font-size:27px;color:#9fd2dc}
+    .dialogue-next{border:0;background:transparent;color:#a9d8e0;font-size:18px;min-width:23px;padding:1px 3px}
+    .dialogue-next:hover{background:#7aa6b83b}
+    .btn,.btn.primary{border-radius:3px;font-weight:600;box-shadow:none}
+    .btn{background:#20343dc4;border:1px solid #789aa57c;color:#e7f2f3}
+    .btn.primary{background:#a7bac1e6;color:#0a2029;border:1px solid #bcd4da}
+    .btn.primary:hover{background:#d7e8eb;color:#081c23}
+    .modal{background:#030b10b9;backdrop-filter:blur(6px)}
+    .modalbox{width:min(800px,100%);padding:43px clamp(18px,4vw,32px) 23px;border:1px solid #a9cbd199;border-top:1px solid #a9cbd199;border-radius:5px;clip-path:none;background:linear-gradient(135deg,#14262cdb,#08151bdc);box-shadow:0 20px 65px #000b;backdrop-filter:blur(18px)}
+    .modalbox:before{height:31px;padding:9px 16px;background:#0c1f27a8;border-bottom:1px solid #aecbd24d;color:#a9c9d1;letter-spacing:.1em;font-size:10px}
+    .modal h1{font-family:inherit;font-style:normal;font-size:clamp(23px,3vw,32px);letter-spacing:.04em;color:#edf5f4}
+    .modal h3{font-family:inherit;font-weight:700;font-size:20px;letter-spacing:.02em;color:#e4f0f1;border-bottom:1px solid #a9c6ca3d}
+    .modalactions{border-top:1px solid #adc9ca2b;padding-top:14px}
+    .eyebrow{color:#9dcdd6}
+    .secret{background:#122831ad;border:1px solid #90b8be64;border-left:2px solid #98d2d9;border-radius:2px}
+    .secret strong{color:#d9e7e6}
+    .event-stage{background:#102329b8;border:1px solid #a3c3c365;border-radius:4px}
+    .event-subtitle{background:#071219c9;border-top:1px solid #a7d6d96e;backdrop-filter:blur(8px);color:#ecf5f4}
+    .event-subtitle strong{color:#b9dce1}
+    @media(max-width:920px){.layout{grid-template-columns:1fr}}
+    @media(max-width:540px){.top .tools .btn{min-width:0;min-height:37px;padding:7px 9px;font-size:11px}.top .tools .btn:before{font-size:17px}.modalbox{padding:43px 17px 17px}.dialogue{grid-template-columns:60px 1fr}}
+    /* Exploration-first layout: no UI obscures the supplied image. */
+    .app{max-width:1700px;padding:8px clamp(7px,1.2vw,18px) 22px}
+    .top{min-height:40px;padding:2px 6px 6px;margin-bottom:7px;gap:8px;flex-wrap:nowrap}
+    .brand{font-size:clamp(19px,2vw,25px);letter-spacing:.11em}
+    .subtitle{font-size:9px;margin-top:0;letter-spacing:.06em}
+    .tools{flex-shrink:0}
+    .top .tools .btn{min-height:29px;padding:3px 9px;font-size:11px;gap:6px;border-color:#90b1b63b;background:#12222ab0}
+    .top .tools .btn:before{font-size:14px}
+    .layout{display:flex;flex-direction:column;gap:8px}
+    .screenframe{width:100%;align-self:stretch;border-color:#89aeb65a}
+    .location{min-height:25px;padding:5px 11px;font-size:10px}
+    .scene{width:100%;aspect-ratio:1672/941}
+    .scene:before{font-size:9px;padding:5px 7px;top:8px;left:9px}
+    .scene:after{inset:5px}
+    .screenframe .dialogue{grid-template-columns:76px minmax(0,1fr);min-height:87px;padding:8px 12px;gap:11px}
+    .portrait{min-height:70px}
+    .dialogue strong{font-size:12px;margin:1px 0 3px}
+    .dialogue p{font-size:13px;line-height:1.6}
+    .dialogue-next{margin-top:0;line-height:1}
+    .side{display:grid;grid-template-columns:1.15fr 1fr 1.15fr;gap:8px;align-items:stretch}
+    .panel{min-width:0;padding:10px 12px;box-shadow:none}
+    .panel h2{font-size:10px;padding-bottom:6px;margin:0 0 7px}
+    .panel p{font-size:11px;line-height:1.6}
+    .progress{height:4px;margin:8px 0 7px}
+    .panel .btn{padding:5px 12px;font-size:11px}
+    .panel [style*="margin-top:13px"]{margin-top:7px!important}
+    .inventory{grid-template-columns:repeat(3,minmax(0,90px));gap:6px}
+    .slot{aspect-ratio:1.4;padding:2px;min-height:0}
+    .slot img{height:clamp(31px,4vw,56px)}
+    .slot small{font-size:9px}
+    .notebook{font-size:11px;min-height:0;line-height:1.7}
+    @media(max-width:800px){.side{grid-template-columns:repeat(2,minmax(0,1fr))}.side .panel:last-child{grid-column:1/-1}}
+    @media(max-width:540px){.top{align-items:flex-start;flex-wrap:wrap;gap:5px}.tools{width:100%;justify-content:flex-end}.top .tools .btn{padding:5px 9px;font-size:10px}.location{font-size:9px;letter-spacing:0}.screenframe .dialogue{grid-template-columns:56px minmax(0,1fr);padding:7px 9px;min-height:76px}.portrait{min-height:61px}.dialogue p{font-size:12px}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.inventory{grid-template-columns:repeat(3,minmax(0,75px))}}
+    /* Compact centered communications console below the artwork. */
+    .screenframe{background:#0a151abc}
+    .screenframe .dialogue{width:min(880px,calc(100% - 20px));margin:7px auto 9px;padding:8px 12px;min-height:84px;border:1px solid #95bac46f;border-radius:3px;background:linear-gradient(100deg,#0b1d25e8,#152832da);box-shadow:0 3px 16px #0005}
+    /* Dedicated command-mode HUD for hints and scan archive. */
+    .modalbox.hud-command{width:min(790px,100%);padding:55px clamp(20px,4vw,33px) 22px;background:linear-gradient(125deg,#0b2029ee,#102b35e8 68%,#081923ed);border:1px solid #8ac5d0a8;box-shadow:0 18px 80px #000d,inset 0 0 0 1px #163945,0 0 40px #53b1c015}
+    .hud-command .hud-heading{display:flex;gap:10px;align-items:center;justify-content:space-between;padding-bottom:13px;border-bottom:1px solid #7aafb975;font:600 11px ui-monospace,Consolas,monospace;letter-spacing:.13em;color:#a1d2db}
+    .hud-command .hud-heading .hud-online{color:#8ee0cf;white-space:nowrap}
+    .hud-command h3{border:0;padding:14px 0 6px;margin:0;color:#eff7f7;font-size:23px}
+    .hud-command .hud-readout{padding:16px 17px;margin:13px 0 16px;border:1px solid #90bcc66b;border-left:3px solid #8bced9;background:linear-gradient(100deg,#183a46a8,#0c232ca6);position:relative}
+    .hud-command .hud-readout:before{content:'TRANSMISSION DATA';display:block;margin-bottom:10px;font:600 10px ui-monospace,Consolas,monospace;letter-spacing:.13em;color:#90c4d0}
+    .hud-command .hud-readout p{font-size:15px;line-height:2;margin:0;color:#f0f7f7}
+    .hud-command .hud-stat{font:600 11px ui-monospace,Consolas,monospace;color:#9dced7;letter-spacing:.06em}
+    .hud-command .hud-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:0;margin:6px 0;list-style:none}
+    .hud-command .hud-list li{min-width:0;padding:8px 9px;border:1px solid #85b7c248;background:#102d37a8;color:#deedef;font-size:12px}
+    .hud-command .hud-list li:before{content:'›';color:#86d4db;margin-right:8px;font-weight:bold}
+    .hud-command .modalactions{border-top:1px solid #80abb351}
+    @media(max-width:540px){.screenframe .dialogue{width:calc(100% - 12px);margin:5px auto 6px;padding:7px}.hud-command .hud-list{grid-template-columns:1fr}.hud-command .hud-readout{padding:12px}}
+    /* Borderless character dialogue: portrait and words only. */
+    .screenframe{background:transparent;border:0;box-shadow:none}
+    .screenframe .dialogue{width:min(970px,100%);grid-template-columns:104px minmax(0,1fr);align-items:center;gap:17px;min-height:114px;margin:8px auto 5px;padding:4px 10px;background:transparent;border:0;border-radius:0;box-shadow:none}
+    .dialogue strong{display:none!important}
+    .dialogue p{font-size:15px;line-height:1.85;color:#f3f6f4;text-shadow:0 2px 5px #000a}
+    .portrait{height:106px;min-height:106px;border:0;border-radius:0;box-shadow:none;background-color:transparent}
+    .portrait.neutral{background-color:transparent}
+    .dialogue-next{margin-top:3px}
+    @media(max-width:540px){.screenframe .dialogue{grid-template-columns:75px minmax(0,1fr);gap:10px;min-height:88px;padding:3px 8px}.portrait{height:79px;min-height:79px}.dialogue p{font-size:13px;line-height:1.65}}
+    /* Wide cinematic discovery still, dialogue composited by the game. */
+    .modalbox.event-modal{width:min(1180px,100%);padding:40px 14px 14px;background:#09151bdc;border-color:#87afb87d}
+    .event-modal .eyebrow{padding-left:7px}
+    .event-modal h3{margin:7px 7px 10px;padding:0 0 7px;border-bottom:0;font-size:17px}
+    .event-modal .event-stage{width:100%;aspect-ratio:1672/941;min-height:0;margin:0 0 11px;border:0;border-radius:2px;display:block;background:#080f16}
+    .event-modal .event-stage img{width:100%;height:100%;max-height:none;object-fit:cover;filter:none;display:block}
+    .event-modal .event-subtitle{padding:15px 21px;background:linear-gradient(90deg,#061018e8,#071522c6 75%,#07152268);border-top:1px solid #a5cbd77a;font-size:clamp(13px,1.4vw,17px);line-height:1.65}
+    .event-modal .event-subtitle strong{display:block;font-size:12px;margin-bottom:3px}
+    .event-modal>p{font-size:12px;margin:5px 8px 10px}
+    .event-modal .modalactions{margin-top:10px}
+    @media(max-width:540px){.modalbox.event-modal{padding:39px 7px 10px}.event-modal .event-subtitle{padding:8px 11px;font-size:12px}.event-modal .event-subtitle strong{font-size:10px}}
+    /* Keep dialogue width; enlarge portrait crop and separate it from text. */
+    .screenframe .dialogue{width:min(970px,100%);grid-template-columns:126px minmax(0,1fr);gap:34px;min-height:126px}
+    .portrait{width:100%;height:122px;min-height:122px;background-size:410% auto;background-position:center top}
+    @media(max-width:540px){.screenframe .dialogue{grid-template-columns:82px minmax(0,1fr);gap:17px;min-height:92px}.portrait{height:88px;min-height:88px;background-size:430% auto}}
+    /* Portrait framing from transparent full-body sources: keep helmets intact. */
+    .portrait{background-size:305% auto;background-position:center top;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 64%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 64%,transparent 100%)}
+    .portrait.nana{background-size:295% auto;background-position:center top}
+    .portrait.neutral{-webkit-mask-image:none;mask-image:none}
+    @media(max-width:540px){.portrait{background-size:305% auto}.portrait.nana{background-size:295% auto}}
+    /* Larger on-screen portrait area, not a tighter zoom crop. */
+    .screenframe .dialogue{grid-template-columns:172px minmax(0,1fr);min-height:180px}
+    .portrait{height:172px;min-height:172px;background-size:285% auto}
+    .portrait.nana{background-size:275% auto}
+    @media(max-width:540px){.screenframe .dialogue{grid-template-columns:112px minmax(0,1fr);min-height:122px}.portrait{height:116px;min-height:116px;background-size:285% auto}.portrait.nana{background-size:275% auto}}
+    /* Correction: dialogue HEIGHT stays fixed; portrait fills that height. */
+    .screenframe .dialogue{height:126px;min-height:126px;grid-template-columns:150px minmax(0,1fr);gap:34px;padding:0 10px}
+    .portrait{height:126px;min-height:126px;background-size:250% auto;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 84%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 84%,transparent 100%)}
+    .portrait.nana{background-size:245% auto}
+    @media(max-width:540px){.screenframe .dialogue{height:92px;min-height:92px;grid-template-columns:101px minmax(0,1fr);gap:16px;padding:0 7px}.portrait{height:92px;min-height:92px;background-size:250% auto}.portrait.nana{background-size:245% auto}}
+    /* Responsive safeguards shared by the chapter-select, exploration and modal screens. */
+    html,body{max-width:100%;overflow-x:clip}
+    .app,.screenframe,.layout,.top,.side,.panel{min-width:0}
+    .top{flex-wrap:wrap;row-gap:8px}
+    .top>div:first-child{min-width:0;overflow-wrap:anywhere}
+    .tools{min-width:0;max-width:100%;justify-content:flex-end}
+    .location{flex-wrap:wrap;overflow-wrap:anywhere}
+    .screenframe .dialogue{height:auto;min-height:126px}
+    .dialogue>div:last-child,.panel,.modalbox{min-width:0;overflow-wrap:anywhere}
+    .modal{place-items:safe center;overscroll-behavior:contain}
+    .modalbox{max-height:calc(100dvh - 30px);overscroll-behavior:contain}
+    .modalactions .btn,.choices .btn{max-width:100%;white-space:normal}
+    .event-stage img,.modalbox img{max-width:100%;height:auto}
+    @media(max-width:1100px){.side{grid-template-columns:repeat(2,minmax(0,1fr))}.side .panel:last-child{grid-column:1/-1}}
+    @media(max-width:650px){.top{align-items:flex-start}.top .tools{width:100%;justify-content:flex-start}.side{grid-template-columns:1fr}.side .panel:last-child{grid-column:auto}.screenframe .dialogue{min-height:92px;grid-template-columns:clamp(64px,22vw,101px) minmax(0,1fr);gap:clamp(8px,2vw,16px);padding:5px 8px}.portrait{height:92px;min-height:92px}.modal{padding:8px}.modalbox{max-height:calc(100dvh - 16px)}.modalactions{gap:6px}}
+    @media(max-height:500px){.modal{padding:6px}.modalbox{max-height:calc(100dvh - 12px)}}
+    /* Match chapter-four interface text to the artwork's viewport-based scale. */
+    @media(min-width:700px), (pointer:fine){
+      .app{width:96vw;max-width:none;padding:.55vw .8vw 2vw}
+      .brand{font-size:1.65vw}.subtitle,.location,.panel h2,.panel p{font-size:clamp(7px,.85vw,20px)}
+      .top .tools .btn,.btn,.dialogue-next{font-size:clamp(7px,.9vw,22px);padding:.45vw .8vw}
+      .dialogue p{font-size:1.15vw}.panel{padding:.8vw}
+      .modalbox{width:min(90vw,55vw);padding:2.4vw 1.7vw 1.3vw}
+      .modal h1{font-size:2vw}.modal h3{font-size:1.4vw}.modal p{font-size:1vw}
+      .modalactions .btn,.choices .btn{min-height:2.7vw}
+    }
+    @media(pointer:fine) and (max-width:699px){
+      .top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.6vw;padding-inline-end:10vw!important}
+      .top .tools{width:auto;justify-content:flex-end;gap:.4vw}
+      .screenframe .dialogue{min-height:0;grid-template-columns:minmax(0,9vw) minmax(0,1fr);gap:1vw;padding:.5vw .65vw}
+      .portrait{height:7vw;min-height:0}
+    }
+  </style>
+  <link rel="stylesheet" href="./exploration-enhancements.css?v=94">
+</head>
+<body>
+<main class="app" id="gameApp" hidden>
+  <header class="top"><div><div class="brand">ORBITAL SALVAGE</div><div class="subtitle"><span id="chapterFourSubtitle"></span></div></div><div class="tools"><button class="btn" id="hintBtn">ヒント</button><button class="btn" id="journalBtn">調査記録</button></div></header>
+  <div class="layout">
+    <section class="screenframe" aria-label="探索画面"><div class="location"><span>LOCATION 02 / 都市衛星 居住リング跡</span><strong>探索中 · 船外活動</strong></div><div class="explore-toolbar"><span class="explore-note">ホイール・ピンチで拡大 / 拡大中はドラッグで移動</span><small class="chapter4-scan-mode">TRACE CORRELATION / 痕跡照合</small><button id="resetView" type="button">表示を戻す</button><button id="nanaScanner" type="button" aria-pressed="false">スキャン</button><button id="memoryPuzzleButton" class="memory-trigger" type="button">記憶の照合：断片 0/3</button></div><div class="explore-viewport" id="exploreViewport"><div class="scene" id="scene"></div></div>
+      <section class="dialogue" aria-live="polite"><div class="portrait" id="speakerIcon">E</div><div><strong id="speaker">エステバン</strong><p id="line">「……居住区の残骸だ。リストの物を探すぞ」</p><button class="dialogue-next" id="dialogueNext" title="次のセリフへ" aria-label="次のセリフへ" hidden>▶</button></div></section>
+    </section>
+    <aside class="side"><section class="panel"><h2>RECOVERY ORDER / 回収依頼</h2><p>廃棄された都市衛星の居住区から、生活用品を回収する。</p><div class="progress"><i id="progressBar" style="width:0%"></i></div><p id="goalText">回収 0 / 3</p><div style="margin-top:13px"><button class="btn primary" id="returnBtn" disabled>帰還する</button></div></section><section class="panel"><h2>CARGO / 回収袋</h2><div class="inventory" id="inventory"><div class="slot">＋</div><div class="slot">＋</div><div class="slot">＋</div></div></section><section class="panel"><h2>SCAN LOG / 調査状況</h2><div class="notebook" id="scanLog">気になる物をクリックして調べよう。</div></section></aside>
+  </div>
+</main>
+<div id="storyRoot" class="story-root" hidden></div>
+<div class="modal" id="modal" hidden><div class="modalbox" id="modalBody"></div></div>
+<script src="./chapter-display.js"></script>
+<script src="./flow.js"></script>
+<script src="./game-sfx.js"></script>
+<script src="./chapter4-bgm.js"></script>
+<script src="./game-menu.js?v=94"></script>
+<script src="./exploration-enhancements.js"></script>
+<script src="./clue-link-puzzle.js"></script>
+<script>
+  'use strict';
+  const scene=document.getElementById('scene'),modal=document.getElementById('modal'),modalBody=document.getElementById('modalBody');
+  const items=[
+    {id:'locker',name:'建付けの悪い収納庫',symbol:'',x:77,y:35,w:15,h:35,rot:'0deg',kind:'zoom',important:true},
+    {id:'cup',name:'ひびの入ったマグカップ',symbol:'',x:12,y:39,w:6,h:12,rot:'-5deg',kind:'story',dialogue:[['ナナ','「ここで、誰かが飲み物を飲んでいたの？」'],['エステバン','「……ああ。大した物じゃねぇがな」']]},
+    {id:'drawing',name:'壁の子供の落書き',symbol:'',x:37,y:22,w:9,h:20,rot:'0deg',kind:'story',dialogue:[['ナナ','「家族の絵……かな」'],['エステバン','「……さあな。余計なこと考えずに手を動かせ」']]},
+    {id:'vase',name:'欠けた花瓶',symbol:'',x:84,y:81,w:10,h:15,rot:'-12deg',kind:'story',dialogue:[['ナナ','「……これは、何を入れていたの？」'],['エステバン','「花だろうよ。今じゃ欠けた容器だ」'],['ナナ','「……それでも、きれいな模様だね」']]},
+    {id:'frame',name:'割れた写真立て',symbol:'',x:9.7,y:69,w:11,h:20,rot:'-12deg',kind:'flavor',line:'割れたガラスに、居住区の冷たい光が反射している。'},
+    {id:'dish',name:'食器の束',symbol:'',x:24,y:53,w:13,h:20,rot:'0deg',kind:'collect',line:'まだ使えそうな食器だ。丁寧に回収する。',cargo:'食器',cargoIcon:'◉'},
+    {id:'light',name:'照明モジュール',symbol:'',x:84,y:14,w:10,h:17,rot:'-20deg',kind:'collect',line:'照明モジュール。壁から外して回収できそうだ。',cargo:'照明',cargoIcon:'✦'},
+    {id:'music',name:'小型音楽プレイヤー',symbol:'',x:47,y:82,w:6,h:10,rot:'-30deg',kind:'flavor',line:'小型の音楽プレイヤーのようだ。充電は切れている。'},
+    {id:'poster',name:'古い金属容器',symbol:'',x:39.7,y:76,w:5.5,h:10,rot:'-5deg',kind:'flavor',line:'古い金属容器。使い込まれた日用品らしい。'},
+    {id:'fabric',name:'漂う布',symbol:'',x:81,y:73,w:16,h:15,rot:'-12deg',kind:'flavor',line:'薄い布地が破損した家具に絡んでいる。回収対象ではない。'},
+    {id:'pipe',name:'剥き出しの配線',symbol:'',x:67,y:10,w:15,h:15,rot:'12deg',kind:'flavor',line:'配線が天井から垂れ下がっている。通電しているかは不明だ。'}
+  ];
+  const seen=new Set(),collected=new Set(),memoryClues=new Set();let doorOpened=false,teddyFound=false,hintStage=0,finished=false,missionNotified=false,memorySolved=false,memoryHintLevel=0;
+  let memoryDraft={mirror:false,order:['','','']};
+  let memoryPuzzle=null;
+  const saveChapterFour=()=>window.storyGame?.saveProgress('chapter4');
+  const byId=id=>document.getElementById(id);
+  let speechQueue=[];
+  function showSpeech(who,message){const isCharacter=who==='ナナ'||who==='エステバン';byId('speaker').textContent=isCharacter?who:'';byId('speaker').hidden=!isCharacter;const portrait=byId('speakerIcon');portrait.className='portrait'+(who==='ナナ'?' nana':who==='エステバン'?'':' neutral');portrait.textContent='';portrait.setAttribute('aria-label',isCharacter?who+'の顔絵':'スキャン情報');byId('line').textContent=message;byId('dialogueNext').hidden=speechQueue.length===0;}
+  function converse(lines){speechQueue=lines.slice(1);showSpeech(...lines[0]);}
+  function say(who,message){converse([[who,message]]);}
+  byId('dialogueNext').onclick=()=>{if(speechQueue.length)showSpeech(...speechQueue.shift());};
+  const itemImages={dish:'item-dishes.webp',light:'item-light.webp',teddy:'item-teddy.webp'};
+  function update(){const count=collected.size;byId('goalText').textContent=`回収 ${count} / 3`;byId('progressBar').style.width=`${count/3*100}%`;byId('returnBtn').disabled=count<3;byId('inventory').innerHTML=[...collected].map(id=>{let it=items.find(x=>x.id===id);const name=it?it.cargo:'熊のぬいぐるみ';return `<div class="slot" title="${name}"><img src="./${itemImages[id]}" alt="${name}"><small>${it?it.cargo:'ぬいぐるみ'}</small></div>`}).join('')+Array.from({length:3-count},()=>'<div class="slot">＋</div>').join('');byId('scanLog').innerHTML=`調査した箇所：${seen.size} / ${items.length}<br>回収した物：${count}点<br>${teddyFound?'熊のぬいぐるみを発見済み':'収納の奥にも何かありそうだ'}`;document.querySelectorAll('.hotspot').forEach(el=>{el.classList.toggle('seen',seen.has(el.dataset.id));el.classList.toggle('recovered',collected.has(el.dataset.id));});}
+  function close(){modal.hidden=true;modalBody.replaceChildren();}
+  function playCompletionTone(){try{const settings=window.storyGame?.readSettings?.()||{},level=settings.mute?0:.055*(settings.master??100)/100*(settings.effects??100)/100;if(level<=0)return;const Type=window.AudioContext||window.webkitAudioContext;if(!Type)return;const audio=new Type();audio.resume();const t=audio.currentTime;[520,780].forEach((frequency,i)=>{const oscillator=audio.createOscillator(),volume=audio.createGain();oscillator.type='sine';oscillator.frequency.value=frequency;volume.gain.setValueAtTime(.0001,t+i*.13);volume.gain.exponentialRampToValueAtTime(Math.max(.0001,level),t+i*.13+.015);volume.gain.exponentialRampToValueAtTime(.0001,t+i*.13+.16);oscillator.connect(volume);volume.connect(audio.destination);oscillator.start(t+i*.13);oscillator.stop(t+i*.13+.18);});setTimeout(()=>audio.close(),700);}catch(_){}}
+  function checkChapterFourComplete(){if(collected.size!==3||missionNotified)return;missionNotified=true;playCompletionTone();const toast=document.createElement('div');toast.className='ch4-mission-notice';toast.setAttribute('role','status');toast.innerHTML='<strong>RECOVERY COMPLETE</strong><span>回収確認 3 / 3 — 帰還できます</span>';byId('gameApp').append(toast);byId('goalText').classList.add('recovery-flash');setTimeout(()=>{toast.remove();byId('goalText').classList.remove('recovery-flash');},1700);}
+  function show(html,variant=''){modalBody.className='modalbox'+(variant==='command'?' hud-command':variant==='event'?' event-modal':'');modalBody.innerHTML=html;modal.hidden=false;const closeButton=modalBody.querySelector('[data-close]');if(closeButton)closeButton.focus();}
+  function noteMemoryClue(id){if(!['drawing','frame','music'].includes(id)||memoryClues.has(id))return;window.gameSfx?.play('clue');memoryClues.add(id);memoryPuzzle?.update();const note=document.createElement('div');note.className='memory-observation';note.textContent=`MEMORY TRACE ${memoryClues.size}/3${memoryClues.size===3?' / 照合可能':''}`;byId('exploreViewport').append(note);setTimeout(()=>note.remove(),1500);saveChapterFour();}
+  function inspect(item){
+    window.gameSfx?.play(item.id==='music'?'device':item.id==='frame'?'glass':'touch');
+    // 帰還済みの旧セーブでも任意の調査・記憶照合は継続できる。
+    // 回収品や収納庫の進行状態だけは、帰還後に変更させない。
+    if(finished && (item.kind==='collect'||item.kind==='zoom'))return;
+    seen.add(item.id);
+    noteMemoryClue(item.id);
+    update();saveChapterFour();
+    if(item.kind==='zoom'){openLocker();return;}
+    if(item.kind==='story'){converse(item.dialogue);return;}
+    if(item.kind==='flavor'){say('調査',item.line);return;}
+    if(item.kind==='collect'){if(collected.has(item.id)){say('調査','これはもう回収した。');return;}show(`<div class="eyebrow">SALVAGE / 調査</div><h3>${item.name}</h3><img class="pickup-image" src="./${itemImages[item.id]}" alt="${item.name}"><p>${item.line}</p><div class="modalactions"><button class="btn" data-close>戻る</button><button class="btn primary" id="collectBtn">回収する</button></div>`);modalBody.querySelector('[data-close]').onclick=close;byId('collectBtn').onclick=()=>{collected.add(item.id);close();say('エステバン',`「${item.cargo}、確保。次だ」`);update();checkChapterFourComplete();saveChapterFour();};}
+  }
+  function openLocker(){const hasTeddy=collected.has('teddy');show(`<div class="eyebrow">DETAIL SCAN / 詳細調査</div><h3>建付けの悪い収納庫</h3><p id="zoomNarration">${doorOpened?(hasTeddy?'ぬいぐるみは回収済みだ。収納庫には古い衣類や生活用品が残っている。':'引き戸が開いた。棚の奥に何か見える。'):'引き戸が歪み、レールに引っかかっている。黒い取っ手を引いてみよう。'}</p><div class="zoom ${doorOpened?'opened':''}${hasTeddy?' teddy-recovered':''}">${doorOpened?(hasTeddy?'':'<button class="teddy-hotspot" id="teddyTarget" aria-label="棚の熊のぬいぐるみを調べる" title="熊のぬいぐるみ"></button>'):'<button class="door-handle" id="doorHandle" aria-label="引き戸の取っ手を調べる" title="取っ手"></button>'}</div><p class="zoomcaption">${hasTeddy?'この棚のぬいぐるみは回収済みだ。':doorOpened?'棚の奥のぬいぐるみを調べよう。':'黒い取っ手、または下の操作ボタンから調べられます。'}</p><div class="modalactions"><button class="btn" data-close>探索画面へ</button>${doorOpened?'':'<button class="btn primary" id="openDoor">引き戸をこじ開ける</button>'}</div>`);modalBody.querySelector('[data-close]').onclick=close;if(!doorOpened){const open=()=>{doorOpened=true;saveChapterFour();say('エステバン','「……レールが歪んでやがる。……よし、開いたぞ。奥を見ろ」');openLocker()};byId('openDoor').onclick=open;byId('doorHandle').onclick=open;}else if(!hasTeddy)byId('teddyTarget').onclick=inspectTeddy;}
+  function inspectTeddy(){teddyFound=true;saveChapterFour();show(`<div class="eyebrow">DISCOVERY / 発見</div><h3>片目のない熊のぬいぐるみ</h3><div class="event-stage"><img src="./event-nana-teddy.webp" alt="ナナが片目のない熊のぬいぐるみを両手に持ち、見つめている"><div class="event-subtitle"><strong>ナナ</strong>「……可愛い、対象。」</div></div><p>片方の目が取れ、綿が少し覗いている。ナナは壊れ物を扱うように、そっと手を伸ばす。</p><div class="modalactions"><button class="btn" id="teddyBack">戻る</button><button class="btn primary" id="teddyCollect">丁寧に回収する</button></div>`,'event');byId('teddyBack').onclick=openLocker;byId('teddyCollect').onclick=()=>{collected.add('teddy');close();converse([['エステバン','「リストにあるなら持ってけ。綿は落とすな、フィルタが詰まる」'],['ナナ','「了解。」']]);update();checkChapterFourComplete();saveChapterFour();};}
+  function returnHome(){if(collected.size<3||finished)return;finished=true;close();saveChapterFour();window.storyGame.afterChapterFour();}
+  function render(){items.forEach(it=>{let el=document.createElement('button');el.className='hotspot'+(it.important?' important':'')+(it.x<18?' edge-left':'')+(it.x>82?' edge-right':'')+(it.y<19?' edge-top':'');el.dataset.id=it.id;el.setAttribute('aria-label',it.name);el.style.cssText=`left:${it.x}%;top:${it.y}%;width:${it.w}%;height:${it.h}%;--rot:${it.rot}`;el.innerHTML=`<span class="tag">${it.name}</span><span class="object" aria-hidden="true">${it.symbol}</span>`;el.onclick=()=>inspect(it);scene.append(el);});update();}
+  byId('hintBtn').onclick=()=>{hintStage=Math.min(hintStage+1,3);let message;if(collected.size===3)message='必要な回収品が揃ったよ。「帰還する」を選ぼう。';else if(hintStage===1)message='……生活用品の痕跡は、棚や収納の周りに残っているかもしれない。';else if(hintStage===2)message=!collected.has('teddy')?'収納庫の引き戸が気になるね。開けられる場所を探してみよう。':'回収依頼と調査済みの物を比べて、まだ手に入れていないものを探そう。';else if(!collected.has('teddy'))message=!doorOpened?'右側の収納庫を調べよう。引き戸には取っ手があるみたい。':'収納庫の奥に片目のない熊のぬいぐるみが見えるよ。';else if(!collected.has('dish')&&!collected.has('light'))message='食器は左手前、照明モジュールは右上に残っているよ。';else if(!collected.has('dish'))message='残りは食器。左手前の棚を調べよう。';else message='残りは照明モジュール。右上の装置を調べよう。';show(`<div class="hud-heading"><span>EVA SUPPORT / 任務支援回線</span><span class="hud-online">● LINK ACTIVE</span></div><h3>探索支援データ</h3><div class="hud-stat">GUIDANCE ${hintStage}/3　　SOURCE : SCAN</div><div class="hud-readout"><p>${message}</p></div><div class="modalactions"><button class="btn primary" data-close>探索へ戻る</button></div>`,'command');modalBody.querySelector('[data-close]').onclick=close;saveChapterFour();};
+  byId('journalBtn').onclick=()=>{const found=items.filter(x=>seen.has(x.id));const cargo=[...collected].map(x=>x==='teddy'?'熊のぬいぐるみ':items.find(it=>it.id===x).cargo);show(`<div class="hud-heading"><span>SCANNER / 調査アーカイブ</span><span class="hud-online">● DATA SYNC</span></div><h3>探索スキャンログ</h3><div class="hud-stat">TRACE ANALYSIS / 痕跡の関連づけ</div><div class="hud-stat">SURVEY ${String(seen.size).padStart(2,'0')} / ${String(items.length).padStart(2,'0')}　　RECOVERED ${String(collected.size).padStart(2,'0')}</div><div class="hud-readout"><p>調査済みの対象</p>${found.length?`<ul class="hud-list">${found.map(x=>`<li>${x.name}</li>`).join('')}</ul>`:'<p>記録された調査対象はありません。</p>'}</div><div class="hud-stat">CARGO / ${cargo.join('、')||'回収品なし'}</div><div class="hud-stat">TRACE LINK / 記憶の照合 ${memoryClues.size}/3 ・ ${memorySolved?'解析済み':'未完了'}</div>${memorySolved?memoryPuzzle?.finishedRecord?.()||'':''}<div class="modalactions"><button class="btn primary" data-close>探索へ戻る</button></div>`,'command');modalBody.querySelector('[data-close]').onclick=close;};
+  byId('returnBtn').onclick=returnHome;modal.addEventListener('click',e=>{if(e.target===modal)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
+  render();
+  const explorationCamera=window.ExplorationEnhancements.mount({
+    viewport:byId('exploreViewport'),scene,scanButton:byId('nanaScanner'),resetButton:byId('resetView'),
+    onScan:()=>{const unvisited=items.filter(it=>!seen.has(it.id));const important=unvisited.some(it=>it.important);say('ナナ',important?'「……少し強い反応がある。あの辺り、まだ調べられそうだよ。」':unvisited.length?'「……微弱な反応を検出。まだ調べていない物があるよ。」':'「……この区画の反応は、ひととおり記録できたみたい。」');}
+  });
+  memoryPuzzle=window.ClueLinkPuzzle.create({
+    trigger:byId('memoryPuzzleButton'),title:'残された記憶の照合',
+    sources:[
+      {id:'drawing',title:'落書き / 記号の輪郭',clue:'ナナの輪郭復元：星＝点の痕、家＝直線の痕、熊＝波の痕。\n元の落書きが鮮明なわけではなく、残留パターンの仮分類。'},
+      {id:'frame',title:'割れた写真立て / 位置の関係',clue:'破片に残った微弱な痕跡を左から読むと「星・家・熊」。ただし割れたガラスの反射で左右が逆に見えている可能性がある。'},
+      {id:'music',title:'音楽プレイヤー / 時間の流れ',clue:'保存された短い波形の順序は「波 → 直線 → 点」。ナナの分類と照らせば、像が正しい向きか判断できそうだ。'},
+    ],
+    hints:[
+      '落書きに復元された記号には、それぞれ違う線の特徴がある。音の記録も線の種類として読み替えてみよう。',
+      '写真立ては割れたガラスだ。左右の並びが鏡のように反転している可能性を考えてみよう。',
+      '音楽プレイヤーの記録は「波 → 直線 → 点」。落書きの記号に置き換え、写真の向きの補正結果と照らし合わせよう。',
+    ],
+    solution:['bear','house','star'],
+    reward:'ナナの解析ログ：別々の品に残った痕跡が、共通の並びを示していた。誰が残したものかは分からない。それでも、ただの偶然ではないのかもしれない。',
+    hasClue:id=>memoryClues.has(id),isSolved:()=>memorySolved,
+    getHintLevel:()=>memoryHintLevel,setHintLevel:n=>{memoryHintLevel=n;saveChapterFour();},
+    shortEffects:()=>!!window.storyGame?.readSettings?.().shortEffects,
+    getDraft:()=>({mirror:memoryDraft.mirror,order:[...memoryDraft.order]}),
+    setDraft:draft=>{memoryDraft={mirror:!!draft.mirror,order:[...draft.order]};saveChapterFour();},
+    onSolved:()=>{
+      if(memorySolved)return;
+      memorySolved=true;saveChapterFour();
+      converse([
+        ['ナナ','「……別々のものだと思ってたけど、同じ形が残ってる。ここにいた人たちにとって、何か意味があったのかな。」'],
+        ['エステバン','「……さあな。今となっちゃ確かめようもねえ。だが、何も考えずに残したってわけじゃなさそうだな。」'],
+      ]);
+    },
+    openModal:html=>show(html,'command'),closeModal:close,
+  });
+  window.chapterFourSave={
+    snapshot:()=>({seen:[...seen],collected:[...collected],doorOpened,teddyFound,hintStage,finished,missionNotified,memoryClues:[...memoryClues],memorySolved,memoryHintLevel,memoryDraft}),
+    restore:data=>{if(!data)return;seen.clear();collected.clear();memoryClues.clear();(data.seen||[]).forEach(x=>seen.add(x));(data.collected||[]).forEach(x=>collected.add(x));(data.memoryClues||[]).forEach(x=>memoryClues.add(x));['drawing','frame','music'].forEach(x=>{if(seen.has(x))memoryClues.add(x)});doorOpened=!!data.doorOpened;teddyFound=!!data.teddyFound;hintStage=data.hintStage||0;finished=!!data.finished;missionNotified=!!data.missionNotified;memorySolved=!!data.memorySolved;memoryHintLevel=Math.min(3,data.memoryHintLevel||0);memoryDraft=data.memoryDraft?.order?.length===3?{mirror:!!data.memoryDraft.mirror,order:[...data.memoryDraft.order]}:{mirror:false,order:['','','']};update();memoryPuzzle?.update();}
+  };
+  document.getElementById('chapterFourSubtitle').textContent = window.chapterDisplay.name('chapter4');
+  window.startChapterFour=()=>{show(`<div class="eyebrow">${window.chapterDisplay.english('chapter4')} / ${window.chapterDisplay.japanese('chapter4')}</div><h1>忘れられた居住区</h1><p>廃棄された都市衛星。かつての暮らしの痕跡から、再利用できる生活用品を回収する。</p><div class="secret"><strong>今回の作業</strong><p>食器・照明モジュールを探す。収納庫にも何か残っているようだ。</p></div><p>画像の中をクリックして物品を調査してください。</p><div class="modalactions"><button class="btn primary" data-close>探索を開始する</button></div>`);modalBody.querySelector('[data-close]').onclick=close;};
+  window.storyGame.start();
+</script>
+</body>
+</html>
