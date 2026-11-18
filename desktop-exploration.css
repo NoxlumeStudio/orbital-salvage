@@ -1,0 +1,149 @@
+/* Analysis labels are descriptive, not controls. Keep the toolbar focused on actions. */
+.flow-scan-mode,.chapter4-scan-mode{display:none!important}
+/* Desktop exploration workspace: spacious art, compact controls, contextual help. */
+@media(min-width:1000px) and (min-height:560px){
+ .app,.flow-wrap{box-sizing:border-box;width:calc(100% - 12px);max-width:none;padding:10px 12px 4px;margin-inline:auto}
+ .app .layout,.flow-wrap .flow-body{display:grid;grid-template-columns:var(--exploration-art-column,minmax(0,3fr)) minmax(248px,1fr);gap:14px;row-gap:8px;margin-top:8px;align-items:start}
+ .app .top,.flow-wrap .flow-head{display:flex;min-height:36px;gap:10px;margin-bottom:4px;padding:0 0 4px;flex-wrap:nowrap;align-items:center}
+ .app .top>div:first-child,.flow-wrap .flow-head>div:first-child{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+ .app .subtitle,.flow-wrap .flow-kicker{margin:0}
+ .app .brand,.flow-wrap .flow-brand{font-size:22px}
+ .app .subtitle,.flow-wrap .flow-kicker{font-size:12px;line-height:1.45}
+ .app .location,.flow-wrap .flow-location{font-size:12px;line-height:1.4;padding:6px 10px;min-height:30px}
+ .flow-wrap .flow-controls{width:auto;gap:6px}
+ .app .top .tools .btn,.flow-wrap .flow-controls .flow-subaction{font-size:13px;min-height:32px;padding:5px 10px;line-height:1.4}
+ .app .side,.flow-wrap .flow-side{display:flex;flex-direction:column;gap:8px;max-height:var(--exploration-height,none);overflow-y:auto;overscroll-behavior:contain;padding-right:2px}
+ .app .side>*,.flow-wrap .flow-side>*{flex-shrink:0}
+ .app .panel,.flow-wrap .flow-pane{padding:10px;font-size:13px;line-height:1.6}
+ .app .panel h2,.flow-wrap .flow-pane h2{font-size:12px;line-height:1.4;margin:0 0 7px;padding-bottom:6px;letter-spacing:.07em}
+ .app .panel p,.flow-wrap .flow-pane p{font-size:13px;line-height:1.6;margin:5px 0}
+ .app .panel .btn,.flow-wrap .flow-action,.flow-wrap .flow-subaction{font-size:13px;min-height:36px;padding:7px 10px;line-height:1.4}
+ .app .explore-toolbar,.flow-wrap .flow-camera-toolbar{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex-wrap:wrap;padding:5px 4px}
+ .app .explore-toolbar button,.flow-wrap .flow-camera-toolbar button{flex:0 0 auto;width:auto;min-width:0;min-height:36px;padding:6px 9px;font-size:12px;line-height:1.4;white-space:nowrap}
+ .app .chapter4-scan-mode,.flow-wrap .flow-scan-mode{flex:0 0 auto;max-width:none;font-size:11px;line-height:1.4;padding:3px 5px;white-space:nowrap}
+ .exploration-camera-help{position:relative;flex:0 0 auto;margin-right:auto;font-size:12px;color:#afcbd5}
+ .exploration-camera-help summary{cursor:pointer;min-height:36px;display:flex;align-items:center;padding:5px 8px;border:1px solid #52717e;border-radius:3px;list-style:revert}
+ .exploration-camera-help>div{position:absolute;top:100%;left:0;z-index:20;width:280px;padding:12px;border:1px solid #7695a2;border-radius:4px;background:#10252ff5;box-shadow:0 7px 20px #0008}
+ .exploration-camera-help>div span{display:block!important;width:auto!important;margin:0!important;font-size:13px!important;line-height:1.7!important}
+ .flow-wrap .flow-tool-help{font-size:12px!important;line-height:1.65!important;margin:5px 0!important}
+ .flow-wrap #flowTools{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:6px;align-items:center}
+ .flow-wrap .flow-tools-heading{grid-column:1;margin-top:7px;padding-top:7px;font-size:11px}
+ .flow-wrap #flowTools>.flow-tool-help,.flow-wrap #flowTools>.flow-tools-list,.flow-wrap #flowTools>.flow-combine,.flow-wrap #flowTools>.flow-selection-status{grid-column:1/-1}
+ .flow-wrap .flow-inventory,.app .inventory{gap:6px}
+ .flow-wrap .flow-cargo-slot,.app .slot{max-height:68px;min-height:50px}
+ .flow-wrap .flow-tool{width:82px;min-height:76px}
+ .flow-wrap .flow-tool img{width:55px;height:46px}
+ .flow-wrap .flow-tool-empty{font-size:12px}
+ .app .layout>.dialogue,.flow-wrap .flow-body>.flow-dialogue{box-sizing:border-box;display:grid;width:100%;height:auto;min-height:112px;grid-template-columns:103px minmax(0,1fr);gap:12px;margin:0;padding:0 10px;border:1px solid #54758066;background:#0d202ac9;border-radius:4px}
+ .app .layout>.dialogue .portrait,.flow-wrap .flow-body>.flow-dialogue .flow-face{width:103px;height:112px;min-height:0;align-self:center;background-size:250% auto}
+ .app .layout>.dialogue p,.flow-wrap .flow-body>.flow-dialogue p{font-size:15px;line-height:1.65;margin:0;overflow-wrap:anywhere}
+ .app .layout>.dialogue strong,.flow-wrap .flow-body>.flow-dialogue strong{font-size:12px;margin-bottom:5px}
+ .app .screenframe,.flow-wrap .flow-body>div:first-child{display:grid;grid-template-columns:minmax(0,1fr);align-content:start;min-width:0}
+ .app .layout>.dialogue,.flow-wrap .flow-body>.flow-dialogue{grid-column:1/-1;grid-row:3}
+ body #gameMenuOpen{font-size:13px;min-width:100px;min-height:32px;padding:5px 12px;top:var(--exploration-menu-top,10px);right:var(--exploration-menu-right,12px)}
+ .flow-wrap .flow-objective-banner{font-size:12px;padding:6px 9px}
+ .app .explore-viewport,.flow-wrap .flow-art{max-width:100%;margin-inline:auto}
+}
+@media(min-width:1200px) and (min-height:560px){
+ .app .screenframe,.flow-wrap .flow-body>div:first-child{grid-template-columns:minmax(210px,1fr) auto;grid-template-rows:auto auto auto}
+ .app .location,.flow-wrap .flow-location{grid-column:1;grid-row:1;min-height:38px;padding:4px 8px;flex-wrap:nowrap;white-space:nowrap;background:#0b171dde;border-bottom:1px solid #87b5bc51}
+ .flow-wrap .flow-location>span:last-child{display:none}
+ .app .location>strong{font-size:11px;white-space:nowrap}
+ .app .explore-toolbar,.flow-wrap .flow-camera-toolbar{grid-column:2;grid-row:1;flex-wrap:nowrap;gap:5px;padding:3px 4px;background:#0b171dde;border-bottom:1px solid #87b5bc51}
+ .app .explore-toolbar button,.flow-wrap .flow-camera-toolbar button{min-height:32px;padding:4px 8px}
+ .exploration-camera-help{margin-right:2px}
+ .exploration-camera-help summary{min-height:32px;padding:4px 7px}
+ .app .explore-viewport,.flow-wrap .flow-art{grid-column:1/-1;grid-row:2;justify-self:center}
+}
+/* Small windows and high zoom retain normal reading flow rather than clipped UI. */
+@media(max-width:999px),(max-height:559px){
+ .app,.flow-wrap{width:100%;max-width:1200px;padding:12px}
+ .brand,.flow-brand{font-size:22px}
+ .subtitle,.location,.flow-kicker,.flow-location,.panel h2,.panel p,.flow-pane h2,.flow-pane p{font-size:13px;line-height:1.65}
+ .top .tools .btn,.btn,.flow-controls .flow-subaction,.flow-action,.flow-subaction,.flow-camera-toolbar button{font-size:13px;min-height:36px;padding:7px 10px}
+ .dialogue p,.flow-dialogue-copy p{font-size:15px;line-height:1.7}
+}
+
+@media(min-width:1000px) and (min-height:560px){
+ .app .layout>.exploration-command-row,.flow-wrap .flow-body>.exploration-command-row{display:grid;grid-template-columns:auto auto minmax(0,1fr);grid-template-rows:auto;grid-column:1;grid-row:1;align-items:center;gap:6px;min-width:0;min-height:34px;background:#0b171dde;border-bottom:1px solid #87b5bc51;flex-wrap:wrap}
+ .exploration-command-row>.location,.exploration-command-row>.flow-location{grid-column:1;grid-row:1;min-width:0;min-height:34px;padding:3px 8px;border:0;white-space:nowrap;font-size:12px}
+ .exploration-command-row>.explore-toolbar,.exploration-command-row>.flow-camera-toolbar{grid-column:2;grid-row:1;display:flex;flex-wrap:nowrap;border:0;min-height:34px;padding:2px 3px;background:transparent}
+ .exploration-command-row>.tools,.exploration-command-row>.flow-controls{grid-column:3;grid-row:1;display:flex;align-items:center;align-self:center;gap:6px;width:auto;margin:0;padding:2px 3px;flex-wrap:nowrap}
+ .exploration-command-row .btn,.exploration-command-row .flow-subaction{min-height:30px;padding:4px 8px;font-size:12px;line-height:1.4}
+ .app .layout>.screenframe,.flow-wrap .flow-body>div:not(.exploration-command-row):not(.flow-dialogue){display:block;grid-column:1;grid-row:2;min-width:0}
+ .app .layout>.side,.flow-wrap .flow-body>.flow-side{grid-column:2;grid-row:1 / 3}
+ .app .top,.flow-wrap .flow-head{justify-content:flex-start}
+}
+@media(min-width:1200px) and (min-height:560px){
+ .app .layout>.exploration-command-row,.flow-wrap .flow-body>.exploration-command-row{flex-wrap:nowrap}
+}
+
+@media(min-width:1000px) and (min-height:560px){
+ .app .top,.flow-wrap .flow-head{min-height:32px;margin-bottom:0;padding-bottom:2px}
+ .app .layout,.flow-wrap .flow-body{margin-top:4px;row-gap:4px;grid-template-rows:max-content auto auto}
+ .exploration-command-row .exploration-camera-help summary{min-height:30px;padding:3px 7px}
+ .exploration-command-row>.flow-controls .flow-subaction,.exploration-command-row>.tools .btn,.exploration-command-row .flow-camera-toolbar button,.exploration-command-row .explore-toolbar button{min-height:30px;padding:4px 8px;font-size:12px}
+ .exploration-command-row>.flow-location>span:last-child{display:none}
+}
+
+@media(min-width:1000px) and (min-height:560px){
+ .exploration-command-row>.tools,.exploration-command-row>.flow-controls{justify-content:flex-start;min-width:0}
+ .exploration-command-row>.location,.exploration-command-row>.flow-location{padding:3px 5px;letter-spacing:.02em}
+ .app .panel,.flow-wrap .flow-pane{padding:8px}
+ .app .panel h2,.flow-wrap .flow-pane h2{margin-bottom:4px;padding-bottom:5px}
+ .app .panel p,.flow-wrap .flow-pane p{margin:4px 0}
+ .app .side,.flow-wrap .flow-side{gap:7px}
+ .flow-wrap .flow-tool-help{padding:7px 9px!important;margin:3px 0!important;line-height:1.5!important}
+ .flow-wrap .flow-cargo-slot,.app .slot{max-height:60px}
+}
+
+@media(min-width:1000px) and (min-height:560px){
+ .app .layout>.exploration-command-row,.flow-wrap .flow-body>.exploration-command-row{align-self:start;height:max-content;min-height:34px;padding-block:2px}
+ .exploration-command-row>.location,.exploration-command-row>.flow-location{min-height:30px}
+ .exploration-command-row>.explore-toolbar,.exploration-command-row>.flow-camera-toolbar,.exploration-command-row>.tools,.exploration-command-row>.flow-controls{min-height:30px;padding-block:0}
+}
+
+@media(min-width:1000px) and (min-height:560px){
+ .flow-wrap .flow-inventory,.app .inventory{grid-template-columns:repeat(3,minmax(0,124px));gap:8px}
+ .flow-wrap .flow-cargo-slot,.app .slot{min-height:84px;max-height:112px;aspect-ratio:1.1}
+ .flow-wrap .flow-cargo-slot small,.app .slot small{font-size:10px;line-height:1.25}
+ .app .slot img{height:76px;max-width:100%;object-fit:contain}
+}
+
+/* Uniform direct artwork placement across the static chapter and all flow chapters. */
+@media(min-width:1000px) and (min-height:560px){
+ .exploration-art-origin{display:none!important}
+ .app .layout>.explore-viewport,.flow-wrap .flow-body>.flow-art{display:block;grid-column:1;grid-row:2;min-width:0;min-height:0;max-width:100%;margin:0;aspect-ratio:1672/941}
+}
+/* Story captions use the same contain-fit width as their background still. */
+.story-cinema .story-caption{box-sizing:border-box;width:min(100%,calc(100dvh * 1672 / 941));max-width:none;height:auto;min-height:0;max-height:calc(100dvh - 16px);bottom:max(8px,calc((100dvh - min(100dvh,100vw * 941 / 1672)) / 2));padding:12px 18px;font-size:clamp(15px,1.1vw,19px);line-height:1.6}
+.story-cinema .story-caption .speaker{font-size:13px}
+.story-cinema .story-caption .advance,.story-cinema .story-caption .story-skip{min-width:100px;min-height:36px;padding:6px 12px;font-size:14px;line-height:1.4}
+/* The discovery still and its caption form one viewport-sized novel scene. */
+.modal:has(.event-modal){padding:8px}
+body .modalbox.event-modal{position:relative;box-sizing:border-box;width:min(calc(100vw - 16px),calc((100dvh - 16px) * 1672 / 941));height:min(calc(100dvh - 16px),calc((100vw - 16px) * 941 / 1672));max-height:calc(100dvh - 16px);padding:0;border:0;clip-path:none;overflow:hidden;background:#040b10}
+body .modalbox.event-modal::before{display:none;content:none}
+body .event-modal .event-stage{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;margin:0;border:0}
+body .event-modal .event-stage img{width:100%;height:100%;object-fit:contain;max-height:none}
+body .event-modal .event-caption{position:absolute;inset:auto 0 0;box-sizing:border-box;width:100%;padding:12px 18px;background:#09151de8}
+body .event-modal .event-caption .eyebrow{padding:0;font-size:11px;line-height:1.3}
+body .event-modal .event-caption h3{padding:0;margin:4px 0;font-size:16px;line-height:1.4}
+body .event-modal .event-subtitle{padding:4px 0;border:0;background:transparent;font-size:15px;line-height:1.5}
+body .event-modal .event-subtitle strong{display:inline;margin-right:10px;font-size:12px}
+body .event-modal .event-caption>p{margin:5px 0;font-size:14px;line-height:1.5}
+body .event-modal .modalactions{display:flex;justify-content:flex-end;gap:8px;margin-top:6px}
+body .event-modal .modalactions .btn{min-height:34px;padding:6px 12px;font-size:13px;line-height:1.4}
+@media(max-height:559px),(max-width:699px){
+ body .modalbox.event-modal{height:auto;max-height:calc(100dvh - 16px);overflow-y:auto}
+ body .event-modal .event-stage{position:relative;height:auto;aspect-ratio:1672/941}
+ body .event-modal .event-caption{position:relative}
+}
+
+/* A spanning sidebar must not contribute its max-content height to row one.
+   Both left rows are measured independently; the right column may scroll inside
+   its own budget without moving the artwork down. Applies to every chapter. */
+@media(min-width:1000px) and (min-height:560px){
+ .app .layout,.flow-wrap .flow-body{grid-template-rows:var(--exploration-command-height,max-content) var(--exploration-art-height,auto) max-content;align-content:start}
+ .app .layout>.exploration-command-row,.flow-wrap .flow-body>.exploration-command-row{grid-template-rows:auto;align-content:center}
+ .app .layout>.side,.flow-wrap .flow-body>.flow-side{min-height:0;align-self:start}
+}

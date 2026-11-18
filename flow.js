@@ -178,7 +178,7 @@
         { id: 'control', title: '右手前の操作パネル', collect: true, cargo: '制御モジュール', text: '操作パネルの内部に、まだ使える制御ユニットが残っている。', x: 87, y: 78, w: 20, h: 26 },
         { id: 'hero', title: '古い映像端末', event: 'hero', x: 81, y: 25, w: 20, h: 25 },
         { id: 'arcade-machine', title: 'アーケード筐体', event: 'arcade-machine', x: 17, y: 35, w: 20, h: 25 },
-        { id: 'claw', title: 'クレーンゲーム', text: 'ナナ「中の玩具を取るために、機械を操作するの？」', x: 54, y: 47, w: 21, h: 41 },
+        { id: 'claw', title: 'クレーンゲーム', speaker: 'ナナ', text: '「中の玩具を取るために、機械を操作するの？」', x: 54, y: 47, w: 21, h: 41 },
         { id: 'toy', title: '浮遊するぬいぐるみ', text: '玩具がいくつも浮かんでいる。ナナは人間が遊んでいた痕跡をじっと眺めている。', x: 35, y: 64, w: 9, h: 15 },
       ],
     },
@@ -472,7 +472,7 @@
     const toolbar = document.createElement('div');
     toolbar.className = 'flow-camera-toolbar';
     const scanMode = id==='prologue'?'IDENTIFICATION / 識別':id==='arcade'?'SYSTEM DIAGNOSTIC / 診断':'ENVIRONMENT / 状態確認';
-    toolbar.innerHTML = `<span>拡大：ホイール・ピンチ / 移動：ドラッグ</span><small class="flow-scan-mode" aria-label="この区画の解析対象">${scanMode}</small><button type="button" id="flowZoomReset">表示を戻す</button><button type="button" id="flowScanToggle" aria-pressed="false">スキャン</button>${id==='prologue'?'<button type="button" id="flowObserveHint">観察のヒント</button><button type="button" id="flowRecordMatch">記録を照合</button>':''}`;
+    toolbar.innerHTML = `<span>拡大：ホイール・ピンチ / 移動：ドラッグ</span><small class="flow-scan-mode" aria-label="この区画の解析対象">${scanMode}</small><button type="button" id="flowZoomReset" title="拡大・移動した表示を初期状態に戻す（等倍では無効）">表示を戻す</button><button type="button" id="flowScanToggle" aria-pressed="false">スキャン</button>${id==='prologue'?'<button type="button" id="flowRecordMatch">番号を照合</button>':''}`;
     viewport.before(toolbar);
     const scene = document.createElement('div');
     scene.className = `flow-camera-scene scan-${id}`;
@@ -505,13 +505,7 @@
       viewport.appendChild(skip);
     }
     if (id === 'prologue') {
-      toolbar.querySelector('#flowObserveHint').onclick = showPrologueObservationHint;
-      toolbar.querySelector('#flowRecordMatch').onclick = () => {
-        const progress = st('prologue');
-        if (progress.observationUnlocked) return detail('残された作業記録','照合は完了しています。結果は調査記録から確認できます。',[{label:'探索に戻る',run:closeDetail}]);
-        if (progress.seen.has('jacket') && progress.seen.has('papers')) return showPrologueRecordChoices();
-        return detail('残された作業記録','作業服と漂う書類を調べると、識別情報の照合ができます。',[{label:'探索に戻る',run:closeDetail}]);
-      };
+      toolbar.querySelector('#flowRecordMatch').onclick = showPrologueRecordEntry;
     }
     stageCamera = window.ExplorationEnhancements.mount({
       viewport,scene,
@@ -665,6 +659,7 @@
     const message=isStageReady(id)?getStageHint(id):level<3?early[id][level-1]:getStageHint(id);
     updateStage(id);
     detail(`探索ヒント ${level}/3`,message,[
+      ...(id==='prologue'?[{label:'作業服・書類の照合ヒント',run:showPrologueObservationHint}]:[]),
       ...(level<3&&!isStageReady(id)?[{label:'次の段階を見る',run:()=>showStageHint(id)}]:[]),
       {label:'探索に戻る',run:closeDetail},
     ]);
@@ -1093,16 +1088,26 @@
       if (id === 'arcade' || id === 'freighter') document.getElementById('flowDetail').querySelector('.flow-detail-inner').classList.add('with-item');
       return;
     }
-    stageDialogue('調査', item.text || 'ここにはかつて誰かが暮らしていた痕跡がある。');
+    stageDialogue(item.speaker || '調査', item.text || 'ここにはかつて誰かが暮らしていた痕跡がある。');
     if (id === 'prologue' && (key === 'jacket' || key === 'papers') && !state.observationUnlocked) {
       const scanNote = key === 'jacket'
         ? 'スキャン復元：識別タグの一部「整備区画 / 末尾 27」。ほかの文字は読み取れない。'
         : 'スキャン復元：勤務書類の管理記録は「R-14」「R-27」「R-42」の3件。どれが作業服の記録かは未確認。';
       detail(item.title, `${item.text}<br><br>${scanNote}`, [
         {label:'探索を続ける',run:closeDetail},
-        ...(state.seen.has('jacket') && state.seen.has('papers') ? [{label:'管理記録を照合する',primary:true,run:showPrologueRecordChoices}] : []),
+        ...(state.seen.has('jacket') && state.seen.has('papers') ? [{label:'管理記録を照合する',primary:true,run:showPrologueRecordChoices}] : [{label:key==='jacket'?'書類の管理番号も調べる':'作業服の識別タグも調べる',run:()=>inspect('prologue',key==='jacket'?'papers':'jacket')}]),
       ]);
     }
+  }
+  function showPrologueRecordEntry() {
+    const progress = st('prologue');
+    if (progress.observationUnlocked) return detail('残された作業記録','照合は完了しています。結果は調査記録から確認できます。',[{label:'探索に戻る',run:closeDetail}]);
+    if (progress.seen.has('jacket') && progress.seen.has('papers')) return showPrologueRecordChoices();
+    return detail('番号照合の手がかり','これは回収とは別の、任意の補足調査です。黄色い作業服の識別タグと、漂う書類の管理番号を比べます。番号は下の対象を調べると表示されます。',[
+      {label:'作業服の識別タグを調べる',run:()=>inspect('prologue','jacket')},
+      {label:'書類の管理番号を調べる',run:()=>inspect('prologue','papers')},
+      {label:'探索に戻る',run:closeDetail},
+    ]);
   }
   function showPrologueRecordChoices(message = '') {
     const state = st('prologue');

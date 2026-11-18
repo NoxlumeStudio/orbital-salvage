@@ -1,0 +1,45 @@
+/* Shared reading-safe inset. The whole desktop canvas uses the same rules on
+   PC and on a scaled phone; artwork and hitbox geometry are unchanged. */
+:root{--reading-safe-inset:clamp(24px,4vw,80px)}
+.story-cinema .story-caption{padding-inline:var(--reading-safe-inset)}
+html body #gameMenuOpen{
+ box-sizing:border-box!important;
+ right:max(var(--exploration-menu-right,12px),12px)!important;
+ top:var(--exploration-menu-top,12px)!important;
+ font:600 12px/1.4 system-ui,sans-serif!important;
+ width:auto!important;min-width:0!important;height:30px!important;min-height:30px!important;
+ padding:4px 10px!important;border-radius:3px!important;
+}
+/* Keep the original full-width surface; inset its contents as one group. */
+.app .layout>.dialogue,.app .screenframe>.dialogue,.flow-wrap .flow-body>.flow-dialogue{
+ box-sizing:border-box;width:100%;max-width:100%;margin-inline:0;
+ padding-inline:var(--reading-safe-inset);padding-block:0;
+ align-items:center;align-content:center;
+}
+/* Illustrated discovery scenes use the same comfortable reading edges. */
+body .event-modal .event-caption{padding-inline:var(--reading-safe-inset)}
+
+/* Center the complete text block between equal top and bottom space. */
+.app .layout>.dialogue>div:last-child,.app .screenframe>.dialogue>div:last-child,.flow-wrap .flow-body>.flow-dialogue .flow-dialogue-copy{
+ align-self:center;display:flex;flex-direction:column;justify-content:center;min-width:0;
+}
+.app .layout>.dialogue p,.app .screenframe>.dialogue p,.flow-wrap .flow-body>.flow-dialogue p{margin-block:0}
+
+/* Retain the original image scale and center, but expose the complete shoulder
+   silhouette outside the old narrow portrait column. Only the bottom is cut. */
+.portrait:not(.neutral),.flow-face:not(.scan){
+ position:relative;overflow:visible!important;
+ background-image:none!important;background-color:transparent!important;
+ -webkit-mask-image:none!important;mask-image:none!important;
+ --portrait-art:url('./esteban-eva.webp');--portrait-art-width:250%;
+}
+.portrait.nana,.flow-face.nana{--portrait-art:url('./nana-eva.webp');--portrait-art-width:245%}
+.portrait:not(.neutral)::before,.flow-face:not(.scan)::before{
+ content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+ width:var(--portrait-art-width);height:100%;pointer-events:none;
+ background:var(--portrait-art) center top/100% auto no-repeat;
+}
+@media(min-width:1000px) and (min-height:560px){
+ .portrait.nana,.flow-face.nana{--portrait-art-width:250%}
+ .app .layout>.dialogue,.app .screenframe>.dialogue,.flow-wrap .flow-body>.flow-dialogue{column-gap:44px}
+}
